@@ -52,7 +52,7 @@ CubicVR.RegisterModule("Material", function(base) {
 
     if (obj_init.textures) {
         for (var i in obj_init.textures) {
-            if (obj_init.textures.hasOwnProperty(i) {
+            if (obj_init.textures.hasOwnProperty(i)) {
                 // enumeration and image cache / string url are now handled by setTexture()
                 this.setTexture(obj_init.textures[i],i);
             }
