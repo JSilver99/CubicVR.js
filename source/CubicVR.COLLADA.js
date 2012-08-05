@@ -109,20 +109,20 @@ CubicVR.RegisterModule("COLLADA",function(base) {
             
   //          return retObj;
             
-            var quat = new CubicVR.Quaternion();
+            var quat = new base.Quaternion();
             quat.fromMatrix(m);
 
-            retObj.position = collada_tools.fixuaxis(up_axis, CubicVR.mat4.vec3_multiply([0,0,0],m));
+            retObj.position = collada_tools.fixuaxis(up_axis, base.mat4.vec3_multiply([0,0,0],m));
 
-            var invTrans = CubicVR.vec3.subtract([0,0,0],retObj.position);
+            var invTrans = base.vec3.subtract([0,0,0],retObj.position);
             
-            CubicVR.mat4.translate(invTrans[0],invTrans[1],invTrans[2],m);
+            base.mat4.translate(invTrans[0],invTrans[1],invTrans[2],m);
 
             retObj.rotation = quat.toEuler();
 
-            var invRot = CubicVR.vec3.subtract([0,0,0],retObj.rotation);
+            var invRot = base.vec3.subtract([0,0,0],retObj.rotation);
            
-            CubicVR.mat4.rotate(invRot[0],invRot[1],invRot[2],m);
+            base.mat4.rotate(invRot[0],invRot[1],invRot[2],m);
 
             retObj.scale = [m[0], -m[5], m[10]];
 */
@@ -269,7 +269,7 @@ CubicVR.RegisterModule("COLLADA",function(base) {
         }
 
         var cn = n.color;
-        var ar = cn ? util.floatDelimArray(cn.$.replace(/ {2}/g," ").replace(/^\s+|\s+$/, ''), " ") : false;
+        var ar = cn ? util.floatDelimArray(cn.$, " ") : false;
 
         return ar;
       }
@@ -281,7 +281,7 @@ CubicVR.RegisterModule("COLLADA",function(base) {
         }
 
         var cn = n['float'];
-        cn = cn ? parseFloat(cn.$.replace(/ {2}/g," ").replace(/^\s+|\s+$/, '')) : 0;
+        cn = cn ? parseFloat(cn.$) : 0;
 
         return cn;
       }
@@ -415,7 +415,7 @@ CubicVR.RegisterModule("COLLADA",function(base) {
                           } else if (tagName == "reflectivity") {
                             nop();
                           } else if (tagName == "transparent") {
-                            nop();
+							nop();
                           } else if (tagName == "index_of_refraction") {
                             nop();
                           }
@@ -672,7 +672,7 @@ CubicVR.RegisterModule("COLLADA",function(base) {
 
                               materialRef = meshId+":"+cl_triangles[tCount]["@material"];
 
-                              if (materialRef === null) {
+                              if (cl_triangles[tCount]["@material"] === undef) {
                                   meshPart.material = 0;
                               } else {
                                   if (materialMap[materialRef] === undef) {
@@ -1171,6 +1171,8 @@ CubicVR.RegisterModule("COLLADA",function(base) {
                       var cl_node = cl_nodes[nodeCount];
 
                       var cl_geoms = cl_node.instance_geometry;
+                      var cl_material = cl_geoms && cl_geoms.bind_material ? 
+                        cl_node.instance_geometry.bind_material.technique_common.instance_material : null;
                       cl_light = cl_nodes[nodeCount].instance_light;
                       cl_camera = cl_nodes[nodeCount].instance_camera;
 
@@ -1199,7 +1201,12 @@ CubicVR.RegisterModule("COLLADA",function(base) {
   
                            sceneObject.name = ((nodeName) ? nodeName : nodeId)+(i?i:"");
                            sceneObject.id = ((nodeId) ? nodeId : nodeName)+(i?i:"");
-
+                            if (cl_material) {
+                                var material = cl_material.length ? cl_material[0] : cl_material;
+                                if (material["@target"]) {
+                                    sceneObject.material = material["@target"].substr(1);
+                                }
+                            }
                             sceneObject.meshId = meshId;
                             sceneObject.meshName = meshName;
 
