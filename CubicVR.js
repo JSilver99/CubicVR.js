@@ -191,7 +191,7 @@ usage:
     
     
     base.features = {};
-    base.quality = CubicVR.enums.HIGH;
+    base.quality = CubicVR.enums.MEDIUM;
   
     var featureSet = {
       low: {
@@ -358,7 +358,7 @@ usage:
         base.ShaderPool[i] = [];
       }
 
-      var dummyTex = new base.Texture();
+      /*var dummyTex = new base.Texture();
       var lightTest = new base.Material();
 
       for (i = 0; i < enums.texture.map.MAX; i++) {
@@ -375,7 +375,7 @@ usage:
             break;
           }
           lc++;
-      }
+      }*/
 
       var emptyLight = GLCore.emptyLight = new base.Light(enums.light.type.POINT);
       emptyLight.diffuse = [0, 0, 0];
@@ -385,7 +385,7 @@ usage:
       emptyLight.cutoff = 0;
 
 
-      log("Calibrated maximum lights per pass to: "+lc);
+      //log("Calibrated maximum lights per pass to: "+lc);
       
 
       for (i = enums.light.type.NULL; i < enums.light.type.MAX; i++) {
